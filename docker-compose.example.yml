@@ -1,0 +1,39 @@
+version: "2"
+
+services:
+
+  NginxPhpfpm:
+    image: git.maifusha.com:5005/docker/nginx-phpfpm:latest
+    container_name: nginx_phpfpm
+    hostname: nginx_phpfpm
+    restart: always
+    env_file: .env
+    ports:
+      - '80:80'
+    volumes:
+      - .:/var/www/html
+    links:
+      - Mysql
+      - Redis
+
+  Mysql:
+    image: git.maifusha.com:5005/docker/mysql:latest
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    env_file: .env
+    ports:
+      - '3306:3306'
+    volumes:
+      - /srv/mysql/data:/var/lib/mysql
+
+  Redis:
+    image: git.maifusha.com:5005/docker/redis:latest
+    container_name: redis
+    hostname: redis
+    restart: always
+    env_file: .env
+    ports:
+      - '6379:6379'
+    volumes:
+      - /srv/redis/data:/data
