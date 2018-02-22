@@ -1,6 +1,7 @@
 > Laravel项目
 
 [![build status](https://git.maifusha.com/web/laravel/badges/master/build.svg)](https://git.maifusha.com/web/laravel/commits/master)
+[![coverage report](https://git.maifusha.com/web/laravel/badges/master/coverage.svg)](https://git.maifusha.com/web/laravel/commits/master)
 
 
 #### 初始化开发环境

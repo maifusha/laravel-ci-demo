@@ -30,7 +30,7 @@ phpunit:
     - triggers
   script:
     - composer install --dev --quiet --prefer-dist --optimize-autoloader
-    - ./vendor/bin/phpunit --configuration phpunit.xml
+    - ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text
 
 
 build_branch:
