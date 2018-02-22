@@ -123,6 +123,11 @@ offline_branch:
   environment:
     name: $CI_COMMIT_REF_NAME
     action: stop
+  except:
+    - test
+    - staging
+    - master
+    - triggers
   when: manual
   script:
     - echo '脚本：下线分支环境+删除分支镜像'
