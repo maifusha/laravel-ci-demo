@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App;
 use Exception;
+use App\Exceptions\Reporter\Fluentd;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -38,10 +40,13 @@ class Handler extends ExceptionHandler
      *
      * @param  \Exception  $exception
      * @return void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
-        parent::report($exception);
+        App::environment('local')
+            ? parent::report($exception)
+            : ($this->shouldReport($exception) and app(Fluentd::class)->report($exception));
     }
 
     /**
