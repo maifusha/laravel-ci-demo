@@ -1,6 +1,6 @@
 FROM git.maifusha.com:5005/docker/nginx-phpfpm:latest
 
-MAINTAINER LiXin "1045909037@qq.com"
+LABEL maintainer="lixin <1045909037@qq.com>"
 
 COPY supervisor.ini /etc/supervisor/conf.d/supervisor.ini
 

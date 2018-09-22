@@ -6,7 +6,7 @@ stages:
 
 
 phpcs:
-  image: git.maifusha.com:5005/docker/php-fpm:latest
+  image: git.yoursite.com:5005/docker/php-fpm:latest
   stage: verify
   except:
     - triggers
@@ -15,7 +15,7 @@ phpcs:
     - ./vendor/bin/phpcs --standard=phpcs.xml
 
 phpmd:
-  image: git.maifusha.com:5005/docker/php-fpm:latest
+  image: git.yoursite.com:5005/docker/php-fpm:latest
   stage: verify
   except:
     - triggers
@@ -24,7 +24,7 @@ phpmd:
     - ./vendor/bin/phpmd app,tests text resources/rulesets/cleancode.xml,resources/rulesets/codesize.xml,resources/rulesets/controversial.xml,resources/rulesets/design.xml,resources/rulesets/naming.xml,resources/rulesets/unusedcode.xml
 
 phpunit:
-  image: git.maifusha.com:5005/docker/php-fpm:latest
+  image: git.yoursite.com:5005/docker/php-fpm:latest
   stage: verify
   except:
     - triggers
@@ -34,7 +34,7 @@ phpunit:
 
 
 build_branch:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: build
   except:
     - test
@@ -48,7 +48,7 @@ build_branch:
     - docker push $BRANCH_TAG
 
 build_test:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: build
   only:
     - test
@@ -60,7 +60,7 @@ build_test:
     - docker push $TAG
 
 build_staging:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: build
   only:
     - staging
@@ -72,7 +72,7 @@ build_staging:
     - docker push $TAG
 
 build_master:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: build
   only:
     - master
@@ -85,7 +85,7 @@ build_master:
 
 
 release_production:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: release
   only:
     - master
@@ -100,13 +100,13 @@ release_production:
 
 
 deploy_branch:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: deploy
   variables:
     GIT_STRATEGY: none
   environment:
     name: $CI_COMMIT_REF_NAME
-    url: http://$CI_COMMIT_REF_SLUG.maifusha.com
+    url: http://$CI_COMMIT_REF_SLUG.yoursite.com
     on_stop: offline_branch
   except:
     - test
@@ -116,7 +116,7 @@ deploy_branch:
   script:
     - BRANCH_TAG=`echo $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME | sed -r 's#/((\w|\-)+)$#:\1#'`
 offline_branch:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: deploy
   variables:
     GIT_STRATEGY: none
@@ -133,42 +133,42 @@ offline_branch:
     - echo '脚本：下线分支环境+删除分支镜像'
 
 deploy_test:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: deploy
   variables:
     GIT_STRATEGY: none
     IMAGE_NAME: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_SHA
   environment:
     name: $CI_COMMIT_REF_NAME
-    url: http://test.maifusha.com
+    url: http://test.yoursite.com
   only:
     - test
   script:
     - echo 'test环境部署'
 
 deploy_staging:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: deploy
   variables:
     GIT_STRATEGY: none
     IMAGE_NAME: $CI_REGISTRY_IMAGE/staging:$CI_COMMIT_SHA
   environment:
     name: $CI_COMMIT_REF_NAME
-    url: http://staging.maifusha.com
+    url: http://staging.yoursite.com
   only:
     - master
   script:
     - echo 'staging环境部署'
 
 deploy_production:
-  image: git.maifusha.com:5005/docker/docker:latest
+  image: git.yoursite.com:5005/docker/docker:latest
   stage: deploy
   variables:
     GIT_STRATEGY: none
     IMAGE_NAME: $CI_REGISTRY_IMAGE
   environment:
     name: production
-    url: http://www.maifusha.com
+    url: http://www.yoursite.com
   only:
     - master
     - triggers

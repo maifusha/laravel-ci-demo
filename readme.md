@@ -1,13 +1,15 @@
-> Laravel项目
+> Demo base for laravel
 
-[![build status](https://git.maifusha.com/web/laravel/badges/master/build.svg)](https://git.maifusha.com/web/laravel/commits/master)
-[![coverage report](https://git.maifusha.com/web/laravel/badges/master/coverage.svg)](https://git.maifusha.com/web/laravel/commits/master)
-
+#### Badages
+```
+[![build status](https://git.yoursite.com/web/laravel/badges/master/build.svg)](https://git.yoursite.com/web/laravel/commits/master)
+[![coverage report](https://git.yoursite.com/web/laravel/badges/master/coverage.svg)](https://git.yoursite.com/web/laravel/commits/master)
+```
 
 #### 初始化开发环境
 1. 拷贝`.env.example`至`.env`
 2. 拷贝`docker-compose.example.yml`至`docker-compose.yml`
-3. 执行`docker login git.maifusha.com:5005`使用`Gitlab`账号登录项目私有`docker`镜像仓库`Container Registry`
+3. 执行`docker login git.yoursite.com:5005`使用`Gitlab`账号登录项目私有`docker`镜像仓库`Container Registry`
 4. 运行`docker-compose pull && docker-compose up -d`拉取镜像并启动环境
 5. 执行`docker exec nginx_phpfpm composer install --profile --prefer-dist --optimize-autoloader`安装`composer`依赖
 6. 执行`docker exec nginx_phpfpm cnpm install`安装`node`依赖
@@ -30,7 +32,6 @@
 
 #### 集群部署
 * 为了思路清晰，项目涉及镜像、部署环境等的命名均以git分支为准
-* feature、test部署使用docker测试集群
-    feature部署容器三天后自动下线并销毁
+* feature、test部署使用docker测试集群，feature部署容器三天后自动下线并销毁
 * staging、production部署使用docker生产集群
 * 服务的集群部署使用8***端口开放服务，通过前端lbs将特定域名流量负载到特定集群端口
