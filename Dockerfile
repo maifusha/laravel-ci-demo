@@ -1,4 +1,4 @@
-FROM git.maifusha.com:5005/docker/nginx-phpfpm:latest
+FROM git.yoursite.com:5005/docker/nginx-phpfpm:latest
 
 LABEL maintainer="lixin <1045909037@qq.com>"
 
