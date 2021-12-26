@@ -52,11 +52,11 @@ deploy_test:
       "
       docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
       docker service update \
-      --update-parallelism 2 \
-      --update-delay 1ms \
-      --with-registry-auth \
-      --image $CI_REGISTRY_IMAGE:test \
-      服务名称 \
+            --update-parallelism 2 \
+            --update-delay 1ms \
+            --with-registry-auth \
+            --image $CI_REGISTRY_IMAGE:test \
+            服务名称 \
       "
 
 deploy_staging:
@@ -76,11 +76,11 @@ deploy_staging:
       "
       docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
       docker service update \
-      --update-parallelism 2 \
-      --update-delay 1ms \
-      --with-registry-auth \
-      --image $CI_REGISTRY_IMAGE:staging \
-      服务名称 \
+            --update-parallelism 2 \
+            --update-delay 1ms \
+            --with-registry-auth \
+            --image $CI_REGISTRY_IMAGE:staging \
+            服务名称 \
       "
 
 deploy_production:
@@ -99,11 +99,11 @@ deploy_production:
     - docker push $CI_REGISTRY_IMAGE:latest
     - ssh -o "StrictHostKeyChecking no" production机账号@production机ip
       "
-        docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
-        docker service update \
-                --update-parallelism 2 \
-                --update-delay 1ms \
-                --with-registry-auth \
-                --image $CI_REGISTRY_IMAGE:latest \
-                服务名称 \
+      docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
+      docker service update \
+            --update-parallelism 2 \
+            --update-delay 1ms \
+            --with-registry-auth \
+            --image $CI_REGISTRY_IMAGE:latest \
+            服务名称 \
       "
