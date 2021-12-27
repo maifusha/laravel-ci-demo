@@ -1,10 +1,7 @@
 stages:
   - verify
+  - build
   - deploy
-
-
-before_script:
-  - eval $(ssh-agent -s) && echo -n "$id_rsa"|ssh-add -
 
 
 phpcs:
@@ -35,6 +32,39 @@ phpunit:
     - ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
 
 
+build_test:
+  image: git.yoursite.com:5005/docker/docker:latest
+  stage: build
+  only:
+    - test
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build --pull -t $CI_REGISTRY_IMAGE:test .
+    - docker push $CI_REGISTRY_IMAGE:test
+
+build_staging:
+  image: git.yoursite.com:5005/docker/docker:latest
+  stage: build
+  only:
+    - staging
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build --pull -t $CI_REGISTRY_IMAGE:staging .
+    - docker push $CI_REGISTRY_IMAGE:staging
+
+build_production:
+  image: git.yoursite.com:5005/docker/docker:latest
+  stage: build
+  only:
+    - triggers
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF .
+    - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF
+    - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+
 deploy_test:
   image: git.yoursite.com:5005/docker/docker:latest
   stage: deploy
@@ -44,10 +74,9 @@ deploy_test:
   only:
     - test
   when: manual
+  before_script:
+    - eval $(ssh-agent -s) && echo -n "$id_rsa"|ssh-add -
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build --pull -t $CI_REGISTRY_IMAGE:test .
-    - docker push $CI_REGISTRY_IMAGE:test
     - ssh -o "StrictHostKeyChecking no" test机账号@test机ip
       "
       docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
@@ -68,10 +97,9 @@ deploy_staging:
   only:
     - staging
   when: manual
+  before_script:
+    - eval $(ssh-agent -s) && echo -n "$id_rsa"|ssh-add -
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build --pull -t $CI_REGISTRY_IMAGE:staging .
-    - docker push $CI_REGISTRY_IMAGE:staging
     - ssh -o "StrictHostKeyChecking no" staging机账号@staging机ip
       "
       docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
@@ -91,12 +119,9 @@ deploy_production:
     url: http://www.yoursite.com
   only:
     - triggers
+  before_script:
+    - eval $(ssh-agent -s) && echo -n "$id_rsa"|ssh-add -
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF .
-    - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF
-    - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:latest
     - ssh -o "StrictHostKeyChecking no" production机账号@production机ip
       "
       docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY};
