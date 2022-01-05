@@ -1,4 +1,4 @@
-> Demo base for laravel
+> Ci/Cd demo for php laravel framework
 
 #### Badages
 ```
